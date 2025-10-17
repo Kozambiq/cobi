@@ -10,6 +10,7 @@ class Booking {
     double distance;
     double fare;
 
+    //
     public Booking(String passengerName, String date, String time, String pickupLocation, String dropoffLocation, double distance) {
         this.passengerName = passengerName;
         this.date = date;
