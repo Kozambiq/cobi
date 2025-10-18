@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 
+// created booking object
 class Booking {
     String passengerName;
     String date;
@@ -10,6 +11,7 @@ class Booking {
     double distance;
     double fare;
 
+    // assigned object variables
     public Booking(String passengerName, String date, String time, String pickupLocation, String dropoffLocation, double distance) {
         this.passengerName = passengerName;
         this.date = date;
@@ -20,8 +22,9 @@ class Booking {
         this.fare = calculateFare(distance);
     }
 
+    // method that handles distance calculations
     private double calculateFare(double distance) {
-        if (distance <= 1) {
+        if (distance < 1) {
             return 25.0;
         } else {
             return 25.0 + (distance - 1) * 20.0;
@@ -36,14 +39,17 @@ class Booking {
 }
 
 public class RideHailingBookingSystem {
-    static ArrayList<Booking> bookings = new ArrayList<>();
-    static ArrayList<Booking> allbooking = new ArrayList<>();
+    static ArrayList<Booking> bookings = new ArrayList<>(); // created array list with variable bookings
+    static ArrayList<Booking> allbooking = new ArrayList<>(); // created array list with variable allbooking
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
         
+        String input;
 
         do {
+
+            // print out menu
             System.out.println("\n==============================");
             System.out.println("  RIDE-HAILING BOOKING SYSTEM");
             System.out.println("==============================");
@@ -53,60 +59,98 @@ public class RideHailingBookingSystem {
             System.out.println("d. Generate Booking Report");
             System.out.println("e. Exit Application");
             System.out.print("Enter choice: ");
-            String input = sc.nextLine().toLowerCase();
+            input = sc.nextLine().toLowerCase();
 
+            // validation of user input
             switch (input) {
                 case "a" -> viewAllBookings();
                 case "b" -> bookARide();
                 case "c" -> deleteBooking();
                 case "d" -> generateBookingReport();
                 case "e" -> {
-                    exitApplication();
-                    return;
+                    System.out.println("Thank you for using!");
+                    System.exit(0);
                 }
                 default -> System.out.println("Invalid option! Please choose again.");
             }
-        } while (true);
+        } while (!input.equals("e"));
     }
 
+    // method for viewing all bookings
     static void viewAllBookings() {
         if (bookings.isEmpty()) {
             System.out.println("No bookings found!");
             return;
         }
 
+        // prints table format
         System.out.println("\n#   Date        Time       Passenger   Pickup Location  Drop-off Location  Distance(km) Fare(PHP)");
         System.out.println("----------------------------------------------------------------------------------------------");
 
-        int i = 1;
+        int i = 1; // handles # counting
+
+        // loops inside the booking array list
         for (Booking b : bookings) {
             System.out.printf("%-3d %s\n", i++, b.toString());
         }
     }
 
+    // method for booking a ride
     static void bookARide() {
         try {
+            
+            // asks for user name
             System.out.print("Enter Passenger Name: ");
             String name = sc.nextLine().trim();
-            System.out.print("Enter Date (MM/DD/YYYY): ");
-            String date = sc.nextLine().trim();
-            System.out.print("Enter Time (e.g. 10:00 AM): ");
-            String time = sc.nextLine().trim();
-            System.out.print("Enter Pick-up Location: ");
-            String pickup = sc.nextLine().trim();
-            System.out.print("Enter Drop-off Location: ");
-            String dropoff = sc.nextLine().trim();
-            System.out.print("Enter Distance (km): ");
-            double distance = Double.parseDouble(sc.nextLine());
 
-            if (name.isEmpty() || date.isEmpty() || time.isEmpty() || pickup.isEmpty() || dropoff.isEmpty()) {
-                System.out.println("Error: All fields must be filled!");
+            if (name.isEmpty()) {
+                System.out.println("Name cannot be empty!");
                 return;
             }
 
+            // asks user for pick up date
+            System.out.print("Enter Date (MM/DD/YYYY): ");
+            String date = sc.nextLine().trim();
+
+            if (date.isEmpty()) {
+                System.out.println("Date cannot be empty!");
+                return;
+            }
+
+            // asks user for time pickup
+            System.out.print("Enter Time (e.g. 10:00 AM): ");
+            String time = sc.nextLine().trim();
+
+            if (time.isEmpty()) {
+                System.out.println("Time cannot be empty!");
+                return;
+            }
+
+            // asks for user pick up location
+            System.out.print("Enter Pick-up Location: ");
+            String pickup = sc.nextLine().trim();
+
+            if (pickup.isEmpty()) {
+                System.out.println("Pick_up cannot be empty!");
+                return;
+            }
+
+            // asks user for drop-off location
+            System.out.print("Enter Drop-off Location: ");
+            String dropoff = sc.nextLine().trim();
+
+            if (dropoff.isEmpty()) {
+                System.out.println("Drop-off cannot be empty!");
+                return;
+            }
+
+            // asks user for distance
+            System.out.print("Enter Distance (km): ");
+            double distance = Double.parseDouble(sc.nextLine());
+
             Booking booking = new Booking(name, date, time, pickup, dropoff, distance);
-            allbooking.add(booking);
-            bookings.add(booking);
+            allbooking.add(booking); // adds the given input to the array list
+            bookings.add(booking); // adds the given input to the array lsit
             System.out.println("Booking successfully added!");
         } catch (NumberFormatException e) {
             System.out.println("Error: Invalid distance input! Please enter a number.");
@@ -115,16 +159,22 @@ public class RideHailingBookingSystem {
         }
     }
 
+    // method for deleting a booking
     static void deleteBooking() {
+
+        // condition to check if booking array is empty
         if (bookings.isEmpty()) {
             System.out.println("No bookings to delete!");
             return;
         }
 
-        viewAllBookings();
+        viewAllBookings(); // print out all booking
+
         System.out.print("Enter booking number to delete: ");
         try {
             int index = Integer.parseInt(sc.nextLine());
+            
+            // checks if booking number exists
             if (index < 1 || index > bookings.size()) {
                 System.out.println("Invalid booking number!");
                 return;
@@ -136,6 +186,7 @@ public class RideHailingBookingSystem {
         }
     }
 
+    // method to generate booking report
     static void generateBookingReport() {
         if (allbooking.isEmpty()) {
             System.out.println("No bookings found!");
@@ -145,16 +196,19 @@ public class RideHailingBookingSystem {
         double totalDistance = 0;
         double totalFare = 0;
 
+        // print table format
         System.out.println("\nREPORT");
         System.out.println("#   Date        Time       Passenger   Distance(km)   Fare(PHP)");
         System.out.println("-------------------------------------------------------------");
 
-        int i = 1;
+        int i = 1; // handles # counting
+
+        // loops inside the booking list and prints out the listed objects
         for (Booking b : allbooking) {
             System.out.printf("%-3d %-10s %-10s %-10s %-13.1f %-10.2f\n", 
                     i++, b.date, b.time, b.passengerName, b.distance, b.fare);
-            totalDistance += b.distance;
-            totalFare += b.fare;
+            totalDistance += b.distance; // adds to the total distance
+            totalFare += b.fare; // adds to the total fares
         }
 
         System.out.println("-------------------------------------------------------------");
@@ -162,16 +216,20 @@ public class RideHailingBookingSystem {
         System.out.printf("Total Distance: %.1f km\n", totalDistance);
         System.out.printf("Total Fare Collected: PHP %.2f\n", totalFare);
 
-        // Optional: Save report to text file
         saveReportToFile(totalDistance, totalFare);
     }
 
+    // method for database txt
     static void saveReportToFile(double totalDistance, double totalFare) {
+
+        // writes this following format inside the BookingReport.txt
         try (PrintWriter writer = new PrintWriter(new FileWriter("BookingReport.txt"))) {
             writer.println("NU BALIWAG - RIDE-HAILING BOOKING REPORT");
             writer.println("=======================================");
             writer.println("#   Date        Time       Passenger   Distance(km)   Fare(PHP)");
             int i = 1;
+
+            // loops inside the booking array list and fills out the asked objects
             for (Booking b : bookings) {
                 writer.printf("%-3d %-10s %-10s %-10s %-13.1f %-10.2f\n",
                         i++, b.date, b.time, b.passengerName, b.distance, b.fare);
@@ -186,8 +244,4 @@ public class RideHailingBookingSystem {
         }
     }
 
-    static void exitApplication() {
-        System.out.println("Thank you!");
-        System.exit(0);
-    }
 }
